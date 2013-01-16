@@ -1,0 +1,14 @@
+{
+    "Hooks":[
+        {
+            "Repo":"pabbix",
+            "Branch":"master",
+            "Shell":"date"
+        },
+        {
+            "Repo":"repo",
+            "Branch":"master",
+            "Shell":"ls"
+        }
+    ]
+}
