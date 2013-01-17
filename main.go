@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+    "os"
 	"os/exec"
 )
 
@@ -43,7 +44,17 @@ func loadConfig(configFile *string) {
 	}
 }
 
+func setLog(logFile *string) {
+    log_handler, err := os.OpenFile(*logFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+    if err != nil {
+        panic("cannot write log")
+    }
+    log.SetOutput(log_handler)
+    log.SetFlags(5)
+}
+
 func startWebserver() {
+    log.Println("starting webserver")
 	http.ListenAndServe(":"+*port, nil)
 }
 
@@ -74,6 +85,7 @@ func executeShell(shell string) {
 var (
 	port       = flag.String("port", "7654", "port to listen on")
 	configFile = flag.String("config", "./config.json", "config")
+    logFile    = flag.String("log", "./log", "log file")
 )
 
 func init() {
@@ -81,6 +93,7 @@ func init() {
 }
 
 func main() {
+    setLog(logFile)
 	loadConfig(configFile)
 	startWebserver()
 }
