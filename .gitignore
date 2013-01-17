@@ -20,3 +20,11 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+
+#deploy stuff
+#
+config
+config/*
+Capfile
+Gemfile
+Gemfile.lock
