@@ -5,10 +5,5 @@
             "Branch":"master",
             "Shell":"date"
         },
-        {
-            "Repo":"repo",
-            "Branch":"master",
-            "Shell":"ls"
-        }
     ]
 }

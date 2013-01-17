@@ -25,6 +25,8 @@ _testmain.go
 #
 config
 config/*
+scripts
+scripts/*
 Capfile
 Gemfile
 Gemfile.lock
