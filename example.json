@@ -4,6 +4,6 @@
             "Repo":"pabbix",
             "Branch":"master",
             "Shell":"date"
-        },
+        }
     ]
 }
