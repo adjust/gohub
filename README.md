@@ -17,9 +17,11 @@ You want to track the status of your Repository "repo" and the branch master. If
 ```json
 {
     "Hooks":[
-        "Repo":"repo",
-        "Branch":"master",
-        "Shell":"niftyscript.sh"
+        {
+          "Repo":"repo",
+          "Branch":"master",
+          "Shell":"niftyscript.sh"
+        }
     ]
 }
 ```
