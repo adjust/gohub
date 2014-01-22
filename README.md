@@ -22,12 +22,21 @@ You want to track the status of your Repository "repo" and the branch master. If
           "Branch":"master",
           "Shell":"niftyscript.sh"
         }
-    ]
+    ],
+    "Mail": {
+        "User": "user",
+        "Password": "secret",
+        "Host": "mail.example.com",
+        "From": "sender@example.com",
+        "To": "receiver@example.com",
+        "Subject": "subject",
+        "Port": 25
+    }
 }
 ```
 
 Now start the server with
-  
+
     go run main.go --port 6578
 
 and add a git-webhook for your.domain.com:6578/repo_master. Everytime you push to master, your script gets executed.
@@ -41,7 +50,7 @@ Git webhooks use only 4 different ips for their webhooks. (207.97.227.253, 50.57
 
 This Software is licensed under the MIT License.
 
-Copyright (c) 2012 adeven GmbH, 
+Copyright (c) 2012 adeven GmbH,
 http://www.adeven.com
 
 Permission is hereby granted, free of charge, to any person obtaining

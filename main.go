@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-    "os"
+	"os"
 	"os/exec"
 )
 
@@ -21,6 +22,7 @@ type GithubJson struct {
 
 type Config struct {
 	Hooks []Hook
+	Mail  *MailSettings
 }
 
 type Hook struct {
@@ -42,19 +44,22 @@ func loadConfig(configFile *string) {
 	for i := 0; i < len(config.Hooks); i++ {
 		addHandler(config.Hooks[i].Repo, config.Hooks[i].Branch, config.Hooks[i].Shell)
 	}
+
+	// obtain mail settings
+	mail = config.Mail
 }
 
 func setLog(logFile *string) {
-    log_handler, err := os.OpenFile(*logFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
-    if err != nil {
-        panic("cannot write log")
-    }
-    log.SetOutput(log_handler)
-    log.SetFlags(5)
+	log_handler, err := os.OpenFile(*logFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+	if err != nil {
+		panic("cannot write log")
+	}
+	log.SetOutput(log_handler)
+	log.SetFlags(5)
 }
 
 func startWebserver() {
-    log.Println("starting webserver")
+	log.Println("starting webserver")
 	http.ListenAndServe(":"+*port, nil)
 }
 
@@ -75,17 +80,26 @@ func addHandler(repo, branch, shell string) {
 }
 
 func executeShell(shell string) {
-	out, err := exec.Command(shell).Output()
+	out, err := exec.Command(shell).CombinedOutput()
 	if err != nil {
-		log.Fatal(err)
+		msg := fmt.Sprintf("An error occured during command execution:\n"+
+			"Output: %s\n"+
+			"Error: %s\n", out, err)
+		log.Printf(msg)
+		if mail != nil {
+			SendErrorReport(mail, msg)
+		}
+
+	} else {
+		log.Printf("Shell output was: %s\n", out)
 	}
-	log.Printf("Shell output was: %s\n", out)
 }
 
 var (
 	port       = flag.String("port", "7654", "port to listen on")
 	configFile = flag.String("config", "./config.json", "config")
-    logFile    = flag.String("log", "./log", "log file")
+	logFile    = flag.String("log", "./log", "log file")
+	mail       *MailSettings
 )
 
 func init() {
@@ -93,7 +107,7 @@ func init() {
 }
 
 func main() {
-    setLog(logFile)
+	setLog(logFile)
 	loadConfig(configFile)
 	startWebserver()
 }
