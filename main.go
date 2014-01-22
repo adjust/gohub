@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,6 +22,7 @@ type GithubJson struct {
 
 type Config struct {
 	Hooks []Hook
+	Mail  *MailSettings
 }
 
 type Hook struct {
@@ -42,6 +44,9 @@ func loadConfig(configFile *string) {
 	for i := 0; i < len(config.Hooks); i++ {
 		addHandler(config.Hooks[i].Repo, config.Hooks[i].Branch, config.Hooks[i].Shell)
 	}
+
+	// obtain mail settings
+	mail = config.Mail
 }
 
 func setLog(logFile *string) {
@@ -77,9 +82,14 @@ func addHandler(repo, branch, shell string) {
 func executeShell(shell string) {
 	out, err := exec.Command(shell).CombinedOutput()
 	if err != nil {
-		log.Printf("An error occured during command execution:\n"+
+		msg := fmt.Sprintf("An error occured during command execution:\n"+
 			"Output: %s\n"+
 			"Error: %s\n", out, err)
+		log.Printf(msg)
+		if mail != nil {
+			SendErrorReport(mail, msg)
+		}
+
 	} else {
 		log.Printf("Shell output was: %s\n", out)
 	}
@@ -89,6 +99,7 @@ var (
 	port       = flag.String("port", "7654", "port to listen on")
 	configFile = flag.String("config", "./config.json", "config")
 	logFile    = flag.String("log", "./log", "log file")
+	mail       *MailSettings
 )
 
 func init() {
