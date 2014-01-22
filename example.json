@@ -5,5 +5,14 @@
             "Branch":"master",
             "Shell":"date"
         }
-    ]
+    ],
+    "Mail": {
+        "User": "user",
+        "Password": "secret",
+        "Host": "mail.example.com",
+        "From": "sender@example.com",
+        "To": "receiver@example.com",
+        "Subject": "subject",
+        "Port": 25
+    }
 }
