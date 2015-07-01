@@ -36,7 +36,19 @@ and add a git-webhook for your.domain.com:6578/repo_master. Everytime you push t
 
 Git webhooks use only 4 different ips for their webhooks. (207.97.227.253, 50.57.128.197, 108.171.174.178, 50.57.231.61) You can easily restrict access to your gohup server by using either a firewall or an equivalent nginx configuration.
 
+## Using Docker
 
+    docker build -t {you}/gohub .
+    docker run -d --name gohub -p 6578:6578 {you}/gohub
+
+With Docker support (access host docker inside container)
+    
+    docker run -d --name gohub -p 6578:6578 -v /var/run/docker.sock:/var/run/docker.sock {you}/gohub
+
+Mounting volume and changing default params
+
+    docker run -d --name gohub -p 6578:6578 -v /YOUR/APP:/app {you}/gohub --port 6578 --config /app/your_config.json --log /app/gohub.log
+    
 ## License
 
 This Software is licensed under the MIT License.
